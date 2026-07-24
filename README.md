@@ -1,4 +1,4 @@
-# Vinta 2023 — slide-deck library
+# Vinta Ai Workflows Updates Deck
 
 The official *Vinta 2023* presentation template, migrated from a static HTML mock into a
 **reusable React + Tailwind component library** and a **controllable slideshow**. Authoring a new
