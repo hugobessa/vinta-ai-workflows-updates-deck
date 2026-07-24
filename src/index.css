@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   Vinta design tokens — ported from the official template (styles.css).
+   In Tailwind v4 these generate utilities automatically, e.g.
+     --color-vinta-blue        -> bg-vinta-blue / text-vinta-blue / border-vinta-blue
+     --text-h2                 -> text-h2 (with its paired line-height)
+     --font-sans / --font-mono -> font-sans / font-mono
+   ========================================================================= */
+@theme {
+  /* Brand palette */
+  --color-vinta-blue: #0052ff; /* canonical brand blue (logo, accents, shapes) */
+  --color-vinta-blue-deep: #0040c8;
+  --color-vinta-blue-soft: #2e6bff;
+  --color-vinta-blue-section: #4a3aff; /* exact bg of the template's blue dividers */
+  --color-vinta-gray: #d9d9d9;
+  --color-vinta-gray-light: #f2f2f2;
+  --color-vinta-ink: #0b1220; /* near-black body text */
+  --color-vinta-muted: #3a4253; /* secondary text on white */
+  --color-vinta-muted-2: #5a6378;
+
+  /* Typography */
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* Template type scale (font-size + paired line-height) */
+  --text-cover: 96px;
+  --text-cover--line-height: 1;
+  --text-thanks: 112px;
+  --text-thanks--line-height: 1;
+  --text-h2: 56px;
+  --text-h2--line-height: 1.05;
+  --text-h3: 22px;
+  --text-h3--line-height: 1.2;
+  --text-h4: 18px;
+  --text-h4--line-height: 1.25;
+  --text-subtitle: 22px;
+  --text-subtitle--line-height: 1.4;
+  --text-body: 18px;
+  --text-body--line-height: 1.5;
+  --text-body-lg: 20px;
+  --text-body-lg--line-height: 1.5;
+  --text-kicker: 13px;
+  --text-kicker--line-height: 1.2;
+  --text-stat: 96px;
+  --text-stat--line-height: 1;
+}
+
+/* The 1920x1080 slide canvas is authored at native size and scaled to fit by
+   the Deck. Everything inside a slide inherits the brand font + smoothing. */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: #1a1a1c;
+    font-family: var(--font-sans);
+    color: var(--color-vinta-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden; /* the deck owns the viewport */
+  }
+}
+
+/* A few brand primitives that repeat verbatim across many slides. Everything
+   else is expressed with Tailwind utilities inside the React components. */
+@layer components {
+  .kicker {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  /* macOS-style traffic-light dots used by the code windows */
+  .code-dots {
+    display: flex;
+    gap: 11px;
+  }
+  .code-dots i {
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    display: block;
+  }
+  .code-dots i:nth-child(1) {
+    background: #ff5f56;
+  }
+  .code-dots i:nth-child(2) {
+    background: #ffbd2e;
+  }
+  .code-dots i:nth-child(3) {
+    background: #27c93f;
+  }
+}
+
+/* When the deck is in print/export mode we allow the page to scroll so a
+   screenshot tool can capture every slide stacked vertically. */
+body.deck-print {
+  overflow: auto;
+}
+
+/* Chromium's PDF/print renderer tiles large blur box-shadows and leaves visible
+   seams (the code window looked "broken" in the PDF export), so drop the shadow
+   under print media. The on-screen slideshow and the PPTX background screenshot
+   (both screen media) keep the full shadow. */
+@media print {
+  .code-win {
+    box-shadow: none !important;
+  }
+}

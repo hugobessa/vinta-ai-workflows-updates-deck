@@ -1,0 +1,7 @@
+node_modules
+dist
+export
+dist-ssr
+*.local
+.DS_Store
+scratchpad

@@ -1,0 +1,45 @@
+name: Template cleanup
+
+# When a new repository is created from this template, rename the project to
+# match the new repo name (package.json, index.html <title>, README heading),
+# commit the result, and delete this workflow so it never runs again.
+#
+# It is guarded to never modify the template repository itself.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    if: github.repository != 'vintasoftware/vinta-react-deck-template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Rename to match repository
+        run: node scripts/init.mjs
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Remove this workflow so it runs only once
+        run: rm -f .github/workflows/template-cleanup.yml
+
+      - name: Commit changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "chore: initialize template for ${{ github.event.repository.name }}"
+            git push
+          else
+            echo "Nothing to rename."
+          fi
