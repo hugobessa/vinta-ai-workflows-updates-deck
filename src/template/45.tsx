@@ -1,5 +1,4 @@
 import { Photo, Place, Shape, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 45" };
 
@@ -42,14 +41,11 @@ export default function Slide45({
       {contacts.slice(0, 2).map((c, i) => {
         const s = POS[i];
         return (
-          <Fragment key={i}>
-            <Place x={s.x} y={859}>
-              <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={s.lMax}>{c.label}</Text>
-            </Place>
-            <Place x={s.x} y={921.7}>
-              <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={s.vMax}>{c.value}</Text>
-            </Place>
-          </Fragment>
+          // Label + value flow in one Place; the label's minHeight reserves its slot, so a taller label pushes the value down instead of covering it.
+          <Place key={i} x={s.x} y={859} w={s.vMax}>
+            <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={s.lMax} style={{ minHeight: 62.7 }}>{c.label}</Text>
+            <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={s.vMax}>{c.value}</Text>
+          </Place>
         );
       })}
     </Slide>

@@ -15,13 +15,11 @@ export interface Slide38Props {
   topics?: string[];
 }
 
-/** Fixed right-side topic slots — y position, preserved from the original. */
-const TOPIC_POS = [
-  { y: 318.3 },
-  { y: 469.5 },
-  { y: 620.7 },
-  { y: 771.9 },
-];
+/** Topics flow in a single right-side column from this top edge, so a taller topic pushes the
+ *  one below it down instead of overlapping it. */
+const TOPIC_TOP = 318.3;
+/** Vertical pitch each non-last topic reserves, so default positions are unchanged. */
+const TOPIC_PITCH = 151.2;
 
 const DEFAULT_CODE = `const pluckDeep = key => obj =>
   key.split('.')
@@ -61,11 +59,21 @@ export default function Slide38({
       <Place x={101} y={55.3}>
         <Text size={51.6} weight={700} color="#FFFFFF" leading={1.14} maxWidth={832}>{title}</Text>
       </Place>
-      {topics.slice(0, 4).map((t, i) => (
-        <Place key={i} x={1440} y={TOPIC_POS[i].y}>
-          <Text size={32.3} weight={700} color="#000000" leading={1.32} maxWidth={312}>{t}</Text>
-        </Place>
-      ))}
+      <Place x={1440} y={TOPIC_TOP} w={312}>
+        {topics.slice(0, 4).map((t, i, arr) => (
+          <Text
+            key={i}
+            size={32.3}
+            weight={700}
+            color="#000000"
+            leading={1.32}
+            maxWidth={312}
+            style={i < arr.length - 1 ? { minHeight: TOPIC_PITCH } : undefined}
+          >
+            {t}
+          </Text>
+        ))}
+      </Place>
     </Slide>
   );
 }

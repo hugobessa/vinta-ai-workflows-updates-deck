@@ -40,10 +40,9 @@ export default function Slide04({
       <Place x={0} y={0} w={1919.7} h={1080}><Photo src="img-77255309fa.png" /></Place>
       <Place x={0} y={0} w={226} h={226.58}><Photo src="img-d940e2ad7d.png" /></Place>
       <Place x={107} y={381} w={210} h={48}><Photo src="img-bea7bafa63.png" /></Place>
-      <Place x={102} y={505.9}>
-        <Text size={93.6} weight={700} color="#000000" leading={1.14} maxWidth={362}>{line1}</Text>
-      </Place>
-      <Place x={102} y={649.9}>
+      {/* Both title lines flow in one Place; line1's minHeight reserves its slot, so a taller line1 pushes line2 down instead of covering it. */}
+      <Place x={102} y={505.9} w={593}>
+        <Text size={93.6} weight={700} color="#000000" leading={1.14} maxWidth={362} style={{ minHeight: 144 }}>{line1}</Text>
         <Text size={93.6} weight={700} color="#0052FF" leading={1.14} maxWidth={593}>{line2}</Text>
       </Place>
       {meta.slice(0, 3).map((m, i) => (

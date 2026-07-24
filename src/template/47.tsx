@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 47" };
 
@@ -19,12 +18,13 @@ export interface Slide47Props {
   contacts?: Slide47Contact[];
 }
 
-/** Fixed right-column contact slots — label/value y + value max width, preserved from the original. */
-const POS = [
-  { ly: 108.8, vy: 192.8, vMax: 745 },
-  { ly: 472.8, vy: 556.8, vMax: 745 },
-  { ly: 836.8, vy: 920.8, vMax: 745 },
-];
+/** Contacts flow in a single right-hand column, so a taller value pushes the contact below it
+ *  down instead of overlapping it. */
+const COLUMN = { x: 922, y: 108.8 };
+/** Vertical pitch between contacts, and the slot the label reserves before its value. */
+const ROW_PITCH = 364;
+const LABEL_SLOT = 84;
+const VALUE_MAX = 745;
 
 // Parametrized reproduction of the official template's Slide 47 (thanks / closing, split).
 export default function Slide47({
@@ -40,25 +40,19 @@ export default function Slide47({
     <Slide bg="white" pad={false}>
       <Place x={0} y={0} w={819.88} h={1080}><Photo src="img-82f980769f.png" inner={{ x: 0, y: 0, w: 1919.95, h: 1080 }} /></Place>
       <Place x={82} y={139} w={183} h={41.94}><Photo src="img-dd5f278a20.png" /></Place>
-      <Place x={101} y={676.3}>
-        <Text size={40.3} weight={700} color="#FFFFFF" leading={1.14} maxWidth={258}>{title}</Text>
-      </Place>
-      <Place x={101} y={760.9}>
+      {/* Eyebrow + big title flow in one Place; the eyebrow's minHeight reserves its slot, so a taller eyebrow pushes the title down instead of covering it. */}
+      <Place x={101} y={676.3} w={639}>
+        <Text size={40.3} weight={700} color="#FFFFFF" leading={1.14} maxWidth={258} style={{ minHeight: 84.6 }}>{title}</Text>
         <Text size={93.6} weight={700} color="#FFFFFF" leading={1.14} maxWidth={639}>{subtitle}</Text>
       </Place>
-      {contacts.slice(0, 3).map((c, i) => {
-        const s = POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={922} y={s.ly}>
-              <Text size={30.7} weight={700} color="#000000" leading={1.32} maxWidth={200}>{c.label}</Text>
-            </Place>
-            <Place x={922} y={s.vy}>
-              <Text size={51.6} weight={700} color="#000000" leading={1.14} maxWidth={s.vMax}>{c.value}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      <Place x={COLUMN.x} y={COLUMN.y} w={VALUE_MAX}>
+        {contacts.slice(0, 3).map((c, r, arr) => (
+          <div key={r} style={{ minHeight: r < arr.length - 1 ? ROW_PITCH : undefined }}>
+            <Text size={30.7} weight={700} color="#000000" leading={1.32} maxWidth={200} style={{ minHeight: LABEL_SLOT }}>{c.label}</Text>
+            <Text size={51.6} weight={700} color="#000000" leading={1.14} maxWidth={VALUE_MAX}>{c.value}</Text>
+          </div>
+        ))}
+      </Place>
     </Slide>
   );
 }

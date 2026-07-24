@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 19" };
 
@@ -23,12 +22,13 @@ export interface Slide19Props {
   items?: Slide19Item[];
 }
 
-/** Fixed slots — number/heading/paragraph positions per side item (01–03), preserved from the original. */
-const ITEM_POS = [
-  { numX: 1108.2, numY: 218.7, headX: 1224.2, headY: 218.7, paraX: 1224.2, paraY: 275.6 },
-  { numX: 1108.2, numY: 457.6, headX: 1224.2, headY: 457.6, paraX: 1224.2, paraY: 514.6 },
-  { numX: 1108.2, numY: 696.6, headX: 1224.2, headY: 696.6, paraX: 1224.2, paraY: 753.6 },
-];
+/** Side items flow in a single column, so a taller item pushes the one below it down instead
+ *  of overlapping it. The number sits in a fixed left gutter beside the heading. */
+const COLUMN = { x: 1108.2, y: 218.7 };
+/** Vertical pitch between items; number gutter width (heading x − number x); heading→text slot. */
+const ROW_PITCH = 238.9;
+const NUM_GUTTER = 116;
+const HEAD_SLOT = 56.9;
 
 const DEFAULT_ITEM_TEXT = "In nulla ultrices ipsum mus elit\nscelerisque fermentum tortor cursus\nmorbi tellus ornare.";
 
@@ -58,31 +58,23 @@ export default function Slide19({
       <Place x={276.2} y={987.18} w={0} h={0}><Photo src="img-cc2c94f684.png" /></Place>
       <Place x={368.71} y={987.18} w={0} h={0}><Photo src="img-381421d8e4.png" /></Place>
       <Place x={92.04} y={987.22} w={0} h={0}><Photo src="img-893765490b.png" /></Place>
-      <Place x={130} y={352.1}>
-        <Text size={64.5} weight={700} color="#0052FF" leading={1.14} maxWidth={683}>{title}</Text>
-      </Place>
-      <Place x={130} y={460.2}>
-        <Text size={27} weight={700} color="#000000" leading={1.32} maxWidth={600}>{subtitle}</Text>
-      </Place>
-      <Place x={130} y={500.2}>
+      {/* Title + lead + body flow in one Place; each minHeight reserves its slot, so a taller title/lead pushes what's below it down instead of covering it. */}
+      <Place x={130} y={352.1} w={706}>
+        <Text size={64.5} weight={700} color="#0052FF" leading={1.14} maxWidth={683} style={{ minHeight: 108.1 }}>{title}</Text>
+        <Text size={27} weight={700} color="#000000" leading={1.32} maxWidth={600} style={{ minHeight: 40 }}>{subtitle}</Text>
         <Text size={26.9} weight={500} color="#000000" leading={1.32} maxWidth={706}>{body}</Text>
       </Place>
-      {items.slice(0, 3).map((item, i) => {
-        const p = ITEM_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.numX} y={p.numY}>
-              <Text size={33.9} weight={700} color="#0052FF" leading={1.32} maxWidth={200}>{item.number}</Text>
-            </Place>
-            <Place x={p.headX} y={p.headY}>
-              <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362}>{item.title}</Text>
-            </Place>
-            <Place x={p.paraX} y={p.paraY}>
+      <Place x={COLUMN.x} y={COLUMN.y} w={655}>
+        {items.slice(0, 3).map((item, r, arr) => (
+          <div key={r} style={{ position: "relative", minHeight: r < arr.length - 1 ? ROW_PITCH : undefined }}>
+            <Text size={33.9} weight={700} color="#0052FF" leading={1.32} maxWidth={200} style={{ position: "absolute", left: 0, top: 0 }}>{item.number}</Text>
+            <div style={{ marginLeft: NUM_GUTTER }}>
+              <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362} style={{ minHeight: HEAD_SLOT }}>{item.title}</Text>
               <Text size={26.9} weight={500} color="#000000" leading={1.32} maxWidth={539}>{item.text}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+            </div>
+          </div>
+        ))}
+      </Place>
     </Slide>
   );
 }

@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 15" };
 
@@ -15,15 +14,15 @@ export interface Slide15Props {
   cards?: Slide15Card[];
 }
 
-/** Fixed 3×2 card slots — title + subtitle position per slot, preserved from the original. */
-const CARD_POS = [
-  { x: 180, ty: 356.2, sy: 416.2 },
-  { x: 734.5, ty: 356.4, sy: 416.4 },
-  { x: 1289, ty: 356.1, sy: 416.1 },
-  { x: 180, ty: 691.5, sy: 751.5 },
-  { x: 734.5, ty: 691, sy: 751 },
-  { x: 1289, ty: 691.2, sy: 751.2 },
+/** Cards grouped into three flowing columns (top y + row pitch + the card indices in each),
+ *  so a taller card pushes the one below it in its column down instead of overlapping it. */
+const COLUMNS = [
+  { x: 180, y: 356.2, pitch: 335.3, rows: [0, 3] },
+  { x: 734.5, y: 356.4, pitch: 334.6, rows: [1, 4] },
+  { x: 1289, y: 356.1, pitch: 335.1, rows: [2, 5] },
 ];
+/** Gap the card title reserves before its subtitle (original 60px). */
+const TITLE_SLOT = 60;
 
 // Parametrized reproduction of the official template's Slide 15 (feature-card grid).
 export default function Slide15({
@@ -45,19 +44,20 @@ export default function Slide15({
       <Place x={737} y={587.19} w={446} h={240.07}><Photo src="img-7d567e09a3.png" /></Place>
       <Place x={1289} y={252.19} w={446} h={240.19}><Photo src="img-6963d3e042.png" /></Place>
       <Place x={1289} y={587.19} w={446} h={240.33}><Photo src="img-1b6dcd00dc.png" /></Place>
-      {cards.slice(0, 6).map((c, i) => {
-        const p = CARD_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.x} y={p.ty}>
-              <Text size={33.9} weight={700} color="#FFFFFF" leading={1.32} maxWidth={409}>{`${i + 1}. ${c.title}`}</Text>
-            </Place>
-            <Place x={p.x} y={p.sy}>
-              <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={410}>{c.text}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      {COLUMNS.map((col) => (
+        <Place key={col.x} x={col.x} y={col.y} w={410}>
+          {col.rows.map((idx, r) => {
+            const c = cards[idx];
+            if (c == null) return null;
+            return (
+              <div key={idx} style={{ minHeight: r < col.rows.length - 1 ? col.pitch : undefined }}>
+                <Text size={33.9} weight={700} color="#FFFFFF" leading={1.32} maxWidth={409} style={{ minHeight: TITLE_SLOT }}>{`${idx + 1}. ${c.title}`}</Text>
+                <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={410}>{c.text}</Text>
+              </div>
+            );
+          })}
+        </Place>
+      ))}
     </Slide>
   );
 }

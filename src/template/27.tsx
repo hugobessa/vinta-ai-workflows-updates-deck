@@ -26,13 +26,11 @@ export default function Slide27({
       <Place x={0.08} y={0} w={108.56} h={108.29}><Photo src="img-9bcf481774.png" /></Place>
       <Place x={639.65} y={387.04} w={640.61} h={614.17}><Photo src="img-1846ceb0e5.png" inner={{ x: -641.11, y: -356.89, w: 1922.83, h: 1080 }} /></Place>
       <Place x={1280.27} y={387.04} w={639.66} h={614.17}><Photo src="img-1846ceb0e5.png" inner={{ x: -1280.32, y: -356.89, w: 1919.97, h: 1080 }} /></Place>
+      {/* Centered title + both intro blocks flow in one Place; each minHeight reserves its slot, so a taller title/block pushes what's below it down instead of covering it. */}
       <Place x={0} y={92.4} w={1920}>
-        <Text size={71} weight={700} color="#0052FF" align="center" leading={1.14}>{title}</Text>
-      </Place>
-      <Place x={0} y={200.1} w={1920}>
-        <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32}>{body[0]}</Text>
-      </Place>
-      <Place x={0} y={273.7} w={1920}>
+        {/* maxWidth keeps a long title clear of the corner decorations by wrapping it; marginInline auto re-centers the capped block. */}
+        <Text size={71} weight={700} color="#0052FF" align="center" leading={1.14} maxWidth={1400} style={{ minHeight: 107.7, marginInline: "auto" }}>{title}</Text>
+        <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32} style={{ minHeight: 73.6 }}>{body[0]}</Text>
         <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32}>{body[1]}</Text>
       </Place>
     </Slide>

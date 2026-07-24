@@ -42,7 +42,7 @@ export default function Slide36({
         <CodeBlock theme="light" language={language} fontSize={fontSize} code={code} />
       </Place>
       <Place x={101} y={179.4}>
-        <Text size={71} weight={700} color="#FFFFFF" leading={1.14} maxWidth={277}>{title}</Text>
+        <Text size={71} weight={700} color="#FFFFFF" leading={1.14} maxWidth={400}>{title}</Text>
       </Place>
     </Slide>
   );

@@ -22,10 +22,9 @@ export default function Slide30({
       <Place x={988} y={572.45} w={400.24} h={398.63}><Photo src="img-a25bfbf91d.png" inner={{ x: -987.93, y: -572.46, w: 1919.8, h: 1080.03 }} /></Place>
       <Place x={0} y={0} w={918.5} h={1080}><Photo src={photo} /></Place>
       <Place x={1430.43} y={572.45} w={400.24} h={398.63}><Photo src="img-a25bfbf91d.png" inner={{ x: -1420.15, y: -572.46, w: 1919.8, h: 1080.03 }} /></Place>
-      <Place x={988} y={156.4}>
-        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={698}>{title}</Text>
-      </Place>
-      <Place x={988} y={373.6}>
+      {/* Title + body flow in one Place; the title's minHeight reserves its original slot, so a taller title pushes the body down instead of covering it. */}
+      <Place x={988} y={156.4} w={698}>
+        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={698} style={{ minHeight: 217.2 }}>{title}</Text>
         <Text size={24.7} weight={500} color="#000000" leading={1.32} maxWidth={698}>{body}</Text>
       </Place>
     </Slide>

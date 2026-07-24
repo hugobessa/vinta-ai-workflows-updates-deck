@@ -14,12 +14,12 @@ export interface Slide24Props {
   data?: Slide24Datum[];
 }
 
-/** Fixed legend row anchors — the dot sits here; its label follows at ~338.4 (original). */
-const LEGEND_POS = [
-  { x: 288.4, y: 489.6 },
-  { x: 288.4, y: 568.6 },
-  { x: 288.4, y: 647.6 },
-];
+/** Title's reserved height (original title y 237.1 → first legend at 489.6). */
+const TITLE_SLOT = 252.5;
+/** Legend left edge (288.4) minus the title's left edge (276.4). */
+const LEGEND_INDENT = 12;
+/** Vertical pitch between legend rows. */
+const LEGEND_PITCH = 79;
 
 // Parametrized reproduction of the official template's Slide 24 (pie chart + legend).
 export default function Slide24({
@@ -38,17 +38,19 @@ export default function Slide24({
       <Place x={879} y={225.95} w={680} h={680}>
         <PieChart data={data} size={680} />
       </Place>
-      <Place x={276.4} y={237.1}>
-        <Text size={71} weight={700} color="#000000" leading={1.14} maxWidth={487}>{title}</Text>
-      </Place>
-      {data.slice(0, 3).map((d, i) => (
-        <Place key={i} x={LEGEND_POS[i].x} y={LEGEND_POS[i].y}>
-          <div className="flex items-center" style={{ gap: 20 }}>
-            <span style={{ width: 30, height: 30, borderRadius: 9999, background: d.color, flexShrink: 0 }} />
-            <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={261}>{d.label}</Text>
+      {/* Title + legend flow in one Place; the title's minHeight reserves its slot and each
+          legend row reserves its pitch, so a taller title/label pushes what's below it down. */}
+      <Place x={276.4} y={237.1} w={487}>
+        <Text size={71} weight={700} color="#000000" leading={1.14} maxWidth={487} style={{ minHeight: TITLE_SLOT }}>{title}</Text>
+        {data.slice(0, 3).map((d, i, arr) => (
+          <div key={i} style={{ marginLeft: LEGEND_INDENT, minHeight: i < arr.length - 1 ? LEGEND_PITCH : undefined }}>
+            <div className="flex items-center" style={{ gap: 20 }}>
+              <span style={{ width: 30, height: 30, borderRadius: 9999, background: d.color, flexShrink: 0 }} />
+              <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={261}>{d.label}</Text>
+            </div>
           </div>
-        </Place>
-      ))}
+        ))}
+      </Place>
     </Slide>
   );
 }

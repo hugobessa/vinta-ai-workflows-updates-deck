@@ -23,10 +23,9 @@ export default function Slide09({
       <Place x={0} y={0} w={129.38} h={130.08}><Photo src="img-f037e44ce5.png" /></Place>
       <Place x={129.29} y={0.11} w={132.72} h={130.45}><Photo src="img-7071b8ff36.png" /></Place>
       <Place x={261.96} y={0.11} w={131.04} h={130.45}><Photo src="img-cb3f6933e5.png" /></Place>
-      <Place x={101} y={271.5}>
-        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={645}>{title}</Text>
-      </Place>
-      <Place x={101} y={414.8}>
+      {/* Title + body flow in one Place; the title's minHeight reserves its original slot, so a taller title pushes the body down instead of covering it. */}
+      <Place x={101} y={271.5} w={645}>
+        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={645} style={{ minHeight: 143.3 }}>{title}</Text>
         <Text size={26.9} weight={500} color="#000000" leading={1.32} maxWidth={645}>{body}</Text>
       </Place>
 

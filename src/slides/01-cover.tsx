@@ -1,17 +1,15 @@
-import { Slide04 } from "@/template";
+import { Slide05 } from "@/template";
 
 export const meta = { title: "Cover" };
 
-/** Starter cover — swap in your title and meta, or pick another cover in CATALOG.md (04, 05, 07). */
 export default function Cover() {
   return (
-    <Slide04
-      line1="Your"
-      line2="title here"
+    <Slide05
+      title={"What's new in\nvinta-ai-workflows"}
       meta={[
-        { label: "Topic", value: "Edit src/slides/" },
-        { label: "Audience", value: "—" },
-        { label: "Date", value: "2026" },
+        { label: "Releases", value: "0.2.0 & 0.3.0" },
+        { label: "Dates", value: "Jul 15–17, 2026" },
+        { label: "Theme", value: "Parallel-safe workflows" },
       ]}
     />
   );

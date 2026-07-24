@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 33" };
 
@@ -17,13 +16,15 @@ export interface Slide33Props {
   cards?: Slide33Card[];
 }
 
-/** Fixed 2×2 quadrant slots — title + body position per slot, preserved from the original. */
-const CARD_POS = [
-  { x: 398, ty: 314.5, by: 373.9 },
-  { x: 1293, ty: 314.5, by: 373.9 },
-  { x: 398, ty: 632.9, by: 692.3 },
-  { x: 1293, ty: 632.9, by: 692.3 },
+/** Quadrant cards grouped into two flowing columns (top y + the card indices in each), so a
+ *  taller card pushes the one below it in its column down instead of overlapping it. */
+const COLUMNS = [
+  { x: 398, y: 314.5, rows: [0, 2] },
+  { x: 1293, y: 314.5, rows: [1, 3] },
 ];
+/** Vertical pitch between the two card rows, and the slot the title reserves before its body. */
+const ROW_PITCH = 318.4;
+const TITLE_SLOT = 59.4;
 
 // Parametrized reproduction of the official template's Slide 33 (feature-card grid).
 export default function Slide33({
@@ -45,19 +46,20 @@ export default function Slide33({
       <Place x={0} y={126.4} w={1920}>
         <Text size={71} weight={700} color="#FFFFFF" align="center" leading={1.14}>{title}</Text>
       </Place>
-      {cards.slice(0, 4).map((c, i) => {
-        const p = CARD_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.x} y={p.ty}>
-              <Text size={33.9} weight={700} color="#FFFFFF" leading={1.32} maxWidth={474}>{c.title}</Text>
-            </Place>
-            <Place x={p.x} y={p.by}>
-              <Text size={24.7} weight={500} color="#FFFFFF" leading={1.32} maxWidth={497}>{c.text}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      {COLUMNS.map((col) => (
+        <Place key={col.x} x={col.x} y={col.y} w={497}>
+          {col.rows.map((idx, r) => {
+            const c = cards[idx];
+            if (c == null) return null;
+            return (
+              <div key={idx} style={{ minHeight: r < col.rows.length - 1 ? ROW_PITCH : undefined }}>
+                <Text size={33.9} weight={700} color="#FFFFFF" leading={1.32} maxWidth={474} style={{ minHeight: TITLE_SLOT }}>{c.title}</Text>
+                <Text size={24.7} weight={500} color="#FFFFFF" leading={1.32} maxWidth={497}>{c.text}</Text>
+              </div>
+            );
+          })}
+        </Place>
+      ))}
     </Slide>
   );
 }

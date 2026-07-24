@@ -1,5 +1,4 @@
 import { Photo, Place, Shape, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 12" };
 
@@ -19,13 +18,22 @@ export interface Slide12Props {
   stats?: Slide12Stat[];
 }
 
-/** Fixed 2×2 metric slots — value + caption position/width, preserved from the original. */
-const STAT_POS = [
-  { x: 986, vy: 282.6, vMax: 269, cy: 394.7, cMax: 272 },
-  { x: 1423, vy: 282.6, vMax: 205, cy: 394.7, cMax: 200 },
-  { x: 986, vy: 582.4, vMax: 301, cy: 694.4, cMax: 205 },
-  { x: 1423, vy: 582.4, vMax: 353, cy: 694.4, cMax: 200 },
+/** Metrics grouped into two flowing columns (top y + the metric indices in each), so a taller
+ *  value/caption pushes the metric below it in its column down instead of overlapping it. */
+const COLUMNS = [
+  { x: 986, y: 282.6, rows: [0, 2] },
+  { x: 1423, y: 282.6, rows: [1, 3] },
 ];
+/** Per-metric value/caption max widths, preserved from the original. */
+const STAT_W = [
+  { vMax: 269, cMax: 272 },
+  { vMax: 205, cMax: 200 },
+  { vMax: 301, cMax: 205 },
+  { vMax: 353, cMax: 200 },
+];
+/** Vertical pitch between the two rows, and the slot the value reserves before its caption. */
+const ROW_PITCH = 299.8;
+const VALUE_SLOT = 112.1;
 
 // Parametrized reproduction of the official template's Slide 12 (stats + text).
 export default function Slide12({
@@ -53,28 +61,26 @@ export default function Slide12({
       <Place x={1794} y={959.22} w={126} h={126.19}><Shape n={8} fit="cover" /></Place>
       <Place x={1794.32} y={834.52} w={125.67} h={124.96}><Shape n={19} fit="cover" /></Place>
       <Place x={1823.52} y={834.52} w={66.68} h={29.18}><Photo src="img-28ba267fe3.png" /></Place>
-      <Place x={104} y={284.5}>
-        <Text size={71} weight={700} color="#FFFFFF" leading={1.14} maxWidth={441}>{title}</Text>
-      </Place>
-      <Place x={101} y={427.4}>
-        <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={558}>{body[0]}</Text>
-      </Place>
-      <Place x={101} y={627.4}>
+      {/* Title + both paragraphs flow in one Place; each minHeight reserves its slot, so a taller title/paragraph pushes what's below it down instead of covering it. */}
+      <Place x={101} y={284.5} w={558}>
+        <Text size={71} weight={700} color="#FFFFFF" leading={1.14} maxWidth={441} style={{ minHeight: 142.9, marginLeft: 3 }}>{title}</Text>
+        <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={558} style={{ minHeight: 200 }}>{body[0]}</Text>
         <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={539}>{body[1]}</Text>
       </Place>
-      {stats.slice(0, 4).map((s, i) => {
-        const p = STAT_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.x} y={p.vy}>
-              <Text size={93.6} weight={700} color="#000000" leading={1.14} maxWidth={p.vMax}>{s.value}</Text>
-            </Place>
-            <Place x={p.x} y={p.cy}>
-              <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={p.cMax}>{s.caption}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      {COLUMNS.map((col) => (
+        <Place key={col.x} x={col.x} y={col.y} w={400}>
+          {col.rows.map((idx, r) => {
+            const s = stats[idx];
+            if (s == null) return null;
+            return (
+              <div key={idx} style={{ minHeight: r < col.rows.length - 1 ? ROW_PITCH : undefined }}>
+                <Text size={93.6} weight={700} color="#000000" leading={1.14} maxWidth={STAT_W[idx].vMax} style={{ minHeight: VALUE_SLOT }}>{s.value}</Text>
+                <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={STAT_W[idx].cMax}>{s.caption}</Text>
+              </div>
+            );
+          })}
+        </Place>
+      ))}
     </Slide>
   );
 }

@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 22" };
 
@@ -45,14 +44,11 @@ export default function Slide22({
       {stats.slice(0, 3).map((s, i) => {
         const p = STAT_POS[i];
         return (
-          <Fragment key={i}>
-            <Place x={p.x} y={p.vy}>
-              <Text size={158.1} weight={700} color="#FFFFFF" leading={1.14} maxWidth={p.vMax}>{s.value}</Text>
-            </Place>
-            <Place x={p.x} y={p.cy}>
-              <Text size={22.6} weight={500} color="#FFFFFF" leading={1.32} maxWidth={p.cMax}>{s.caption}</Text>
-            </Place>
-          </Fragment>
+          // Value + caption flow in one Place; the value's minHeight reserves its slot, so a taller value pushes the caption down instead of covering it.
+          <Place key={i} x={p.x} y={p.vy} w={p.vMax}>
+            <Text size={158.1} weight={700} color="#FFFFFF" leading={1.14} maxWidth={p.vMax} style={{ minHeight: p.cy - p.vy }}>{s.value}</Text>
+            <Text size={22.6} weight={500} color="#FFFFFF" leading={1.32} maxWidth={p.cMax}>{s.caption}</Text>
+          </Place>
         );
       })}
       <Place x={101} y={655.8}>

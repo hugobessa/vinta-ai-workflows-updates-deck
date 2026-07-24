@@ -46,10 +46,9 @@ export default function Slide39({
       <Place x={148.1} y={57.8} w={1050.1} h={922.3}>
         <CodeBlock theme="dark" language={language} fontSize={fontSize} code={code} />
       </Place>
-      <Place x={1293} y={308.9}>
-        <Text size={64.5} weight={700} color="#0052FF" leading={1.14} maxWidth={461}>{title}</Text>
-      </Place>
-      <Place x={1293} y={507.3}>
+      {/* Title + subtitle flow in one Place; the title's minHeight reserves its slot, so a taller title pushes the subtitle down instead of covering it. */}
+      <Place x={1293} y={308.9} w={466}>
+        <Text size={64.5} weight={700} color="#0052FF" leading={1.14} maxWidth={461} style={{ minHeight: 198.4 }}>{title}</Text>
         <Text size={32.3} weight={700} color="#000000" leading={1.32} maxWidth={466}>{subtitle}</Text>
       </Place>
     </Slide>

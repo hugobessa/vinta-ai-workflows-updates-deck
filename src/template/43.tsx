@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 43" };
 
@@ -53,29 +52,21 @@ export default function Slide43({
       <Place x={608} y={442.24} w={260} h={260}><Photo src="img-4675d42f81.png" /></Place>
       <Place x={1063} y={442.24} w={260} h={260}><Photo src="img-62dc021e00.png" /></Place>
       <Place x={1507} y={442.24} w={260} h={260}><Photo src="img-25e4f1dcf7.png" /></Place>
+      {/* Centered title + body flow in one Place; the title's minHeight reserves its slot, so a taller title pushes the body down instead of covering it. */}
       <Place x={0} y={158.9} w={1920}>
-        <Text size={71} weight={700} color="#FFFFFF" align="center" leading={1.14}>{title}</Text>
-      </Place>
-      <Place x={0} y={273.6} w={1920}>
+        <Text size={71} weight={700} color="#FFFFFF" align="center" leading={1.14} style={{ minHeight: 114.7 }}>{title}</Text>
         <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32}>{body}</Text>
       </Place>
       {people.slice(0, 4).map((p, i) => {
         const s = POS[i];
         return (
-          <Fragment key={i}>
-            <Place x={s.x} y={734.8} w={424}>
-              <Text size={30.7} weight={700} color="#FFFFFF" align="center" leading={1.32}>{p.name}</Text>
-            </Place>
-            <Place x={s.x} y={783} w={424}>
-              <Text size={24.2} weight={500} color="#FFFFFF" align="center" leading={1.32}>{p.role}</Text>
-            </Place>
-            <Place x={s.x} y={847.1} w={424}>
-              <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32}>{p.line1}</Text>
-            </Place>
-            <Place x={s.x} y={883.9} w={424}>
-              <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32}>{p.line2}</Text>
-            </Place>
-          </Fragment>
+          // name → role → bio lines flow in one Place; each minHeight reserves its slot, so a taller line pushes what's below it down instead of covering it.
+          <Place key={i} x={s.x} y={734.8} w={424}>
+            <Text size={30.7} weight={700} color="#FFFFFF" align="center" leading={1.32} style={{ minHeight: 48.2 }}>{p.name}</Text>
+            <Text size={24.2} weight={500} color="#FFFFFF" align="center" leading={1.32} style={{ minHeight: 64.1 }}>{p.role}</Text>
+            <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32} style={{ minHeight: 36.8 }}>{p.line1}</Text>
+            <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32}>{p.line2}</Text>
+          </Place>
         );
       })}
     </Slide>

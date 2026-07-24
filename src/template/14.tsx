@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 14" };
 
@@ -15,15 +14,18 @@ export interface Slide14Props {
   items?: Slide14Item[];
 }
 
-/** Fixed slots — number position + heading position per row (01–06), preserved from the original. */
-const ITEM_POS = [
-  { numX: 195, numY: 268, headX: 271.3, headY: 254.8 },
-  { numX: 195, numY: 478, headX: 271.3, headY: 464.8 },
-  { numX: 195, numY: 688, headX: 271.3, headY: 674.8 },
-  { numX: 1081, numY: 268, headX: 1183.9, headY: 254.8 },
-  { numX: 1081, numY: 478, headX: 1183.9, headY: 464.8 },
-  { numX: 1081, numY: 688, headX: 1183.9, headY: 674.8 },
+/** Numbered rows grouped into two flowing columns, so a taller heading pushes the row below
+ *  it in its column down instead of overlapping it. The number sits in a fixed left gutter
+ *  beside the heading. Positions preserved from the original. */
+const COLUMNS = [
+  { numX: 195, y: 254.8, rows: [0, 1, 2] },
+  { numX: 1081, y: 254.8, rows: [3, 4, 5] },
 ];
+/** Vertical pitch between rows — each non-last row reserves it, so default positions are unchanged. */
+const ROW_PITCH = 210;
+/** Number gutter width (heading x − number x) and the number's downward nudge within a row. */
+const NUM_GUTTER = 76.3;
+const NUM_TOP = 13.2;
 
 // Parametrized reproduction of the official template's Slide 14 (numbered rows).
 export default function Slide14({
@@ -46,19 +48,20 @@ export default function Slide14({
       <Place x={200} y={659.99} w={684.75} h={74}><Photo src="img-ee4010a0a2.png" /></Place>
       <Place x={200} y={450} w={684.75} h={74}><Photo src="img-b3e972ae17.png" /></Place>
       <Place x={200} y={240} w={684.75} h={74}><Photo src="img-b3e972ae17.png" /></Place>
-      {items.slice(0, 6).map((item, i) => {
-        const p = ITEM_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.headX} y={p.headY}>
-              <Text size={51.6} weight={700} color="#000000" leading={1.14} maxWidth={548}>{item.title}</Text>
-            </Place>
-            <Place x={p.numX} y={p.numY}>
-              <Text size={24.2} weight={500} color="#0052FF" leading={1.32} maxWidth={200}>{item.number}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      {COLUMNS.map((col) => (
+        <Place key={col.numX} x={col.numX} y={col.y} w={690}>
+          {col.rows.map((idx, r) => {
+            const item = items[idx];
+            if (item == null) return null;
+            return (
+              <div key={idx} style={{ position: "relative", minHeight: r < col.rows.length - 1 ? ROW_PITCH : undefined }}>
+                <Text size={24.2} weight={500} color="#0052FF" leading={1.32} maxWidth={200} style={{ position: "absolute", left: 0, top: NUM_TOP }}>{item.number}</Text>
+                <Text size={51.6} weight={700} color="#000000" leading={1.14} maxWidth={548} style={{ marginLeft: NUM_GUTTER }}>{item.title}</Text>
+              </div>
+            );
+          })}
+        </Place>
+      ))}
     </Slide>
   );
 }

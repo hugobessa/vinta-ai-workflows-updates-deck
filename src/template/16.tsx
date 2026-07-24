@@ -47,10 +47,9 @@ export default function Slide16({
       <Place x={79.3} y={1000.75} w={0} h={0}><Shape n={2} fit="cover" /></Place>
       <Place x={79.3} y={921.62} w={0} h={0}><Shape n={13} fit="cover" /></Place>
       <Place x={158.38} y={999.87} w={0} h={0}><Shape n={21} fit="cover" /></Place>
-      <Place x={158.4} y={199.4}>
-        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={900}>{title}</Text>
-      </Place>
-      <Place x={LIST.x} y={LIST.y} w={LIST.w}>
+      {/* Title + list flow in one Place; the title's minHeight reserves its slot, so a taller title pushes the whole list down instead of covering it. */}
+      <Place x={LIST.x} y={199.4} w={LIST.w}>
+        <Text size={71} weight={700} color="#0052FF" leading={1.14} maxWidth={1300} style={{ minHeight: LIST.y - 199.4 }}>{title}</Text>
         {/* Single semantic list flowing into two columns: items fill the left
             column top-to-bottom first, then spill into the right. */}
         <ul

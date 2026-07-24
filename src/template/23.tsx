@@ -35,10 +35,9 @@ export default function Slide23({
       <Place x={94.61} y={239.23} w={1109.63} h={686.11}>
         <BarChart data={data} max={max} width={1109.63} height={686.11} />
       </Place>
-      <Place x={1314} y={338.2}>
-        <Text size={71} weight={700} color="#000000" leading={1.14} maxWidth={487}>{title}</Text>
-      </Place>
-      <Place x={1314} y={564.2}>
+      {/* Title + body flow in one Place; the title's minHeight reserves its original slot, so a taller title pushes the body down instead of covering it. */}
+      <Place x={1314} y={338.2} w={510}>
+        <Text size={71} weight={700} color="#000000" leading={1.14} maxWidth={487} style={{ minHeight: 226 }}>{title}</Text>
         <Text size={24.2} weight={500} color="#000000" leading={1.32} maxWidth={510}>{body}</Text>
       </Place>
     </Slide>

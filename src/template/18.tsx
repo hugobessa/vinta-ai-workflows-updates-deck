@@ -1,5 +1,4 @@
 import { Photo, Place, Shape, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 18" };
 
@@ -17,14 +16,18 @@ export interface Slide18Props {
   items?: Slide18Item[];
 }
 
-/** Fixed slots — number/heading/paragraph positions per feature (01–05), preserved from the original. */
-const ITEM_POS = [
-  { x: 104.2, numY: 195.2, headY: 288.9, paraY: 358.9 },
-  { x: 731.2, numY: 195.2, headY: 288.9, paraY: 358.9 },
-  { x: 1358.2, numY: 195.2, headY: 288.9, paraY: 358.9 },
-  { x: 731.2, numY: 599.4, headY: 693.1, paraY: 763.1 },
-  { x: 1358.2, numY: 599.4, headY: 693.1, paraY: 763.1 },
+/** Feature blocks grouped into flowing columns (the item indices in each), so a taller block
+ *  pushes the one below it in its column down instead of overlapping it. */
+const COLUMNS = [
+  { x: 104.2, rows: [0] },
+  { x: 731.2, rows: [1, 3] },
+  { x: 1358.2, rows: [2, 4] },
 ];
+const COLUMN_Y = 195.2;
+/** Vertical pitch between rows, and the slots the number/heading reserve before what follows them. */
+const ROW_PITCH = 404.2;
+const NUM_SLOT = 93.7;
+const HEAD_SLOT = 70;
 
 const DEFAULT_TEXT = "Lectus lacus hendrerit morbi\nlectus eget orci nisi platea. Quis\nmi nisi ut integer. Lorem lacus\nbibendum turpis arcu.";
 
@@ -55,22 +58,21 @@ export default function Slide18({
       <Place x={1732.46} y={-1.93} w={93.94} h={93.44}><Photo src="img-5965735368.png" flipY /></Place>
       <Place x={187.36} y={-2.42} w={93.52} h={93.88}><Shape n={11} fit="cover" flipY /></Place>
       <Place x={1826.38} y={91.65} w={93.59} h={93.64}><Photo src="img-187d5e1025.png" flipY /></Place>
-      {items.slice(0, 5).map((item, i) => {
-        const p = ITEM_POS[i];
-        return (
-          <Fragment key={i}>
-            <Place x={p.x} y={p.numY}>
-              <Text size={51.6} weight={700} color="#0052FF" leading={1.14} maxWidth={200}>{item.number}</Text>
-            </Place>
-            <Place x={p.x} y={p.headY}>
-              <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362}>{item.title}</Text>
-            </Place>
-            <Place x={p.x} y={p.paraY}>
-              <Text size={24.7} weight={500} color="#000000" leading={1.32} maxWidth={441}>{item.text}</Text>
-            </Place>
-          </Fragment>
-        );
-      })}
+      {COLUMNS.map((col) => (
+        <Place key={col.x} x={col.x} y={COLUMN_Y} w={441}>
+          {col.rows.map((idx, r) => {
+            const item = items[idx];
+            if (item == null) return null;
+            return (
+              <div key={idx} style={{ minHeight: r < col.rows.length - 1 ? ROW_PITCH : undefined }}>
+                <Text size={51.6} weight={700} color="#0052FF" leading={1.14} maxWidth={200} style={{ minHeight: NUM_SLOT }}>{item.number}</Text>
+                <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362} style={{ minHeight: HEAD_SLOT }}>{item.title}</Text>
+                <Text size={24.7} weight={500} color="#000000" leading={1.32} maxWidth={441}>{item.text}</Text>
+              </div>
+            );
+          })}
+        </Place>
+      ))}
     </Slide>
   );
 }

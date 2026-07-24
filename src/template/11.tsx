@@ -20,8 +20,11 @@ export interface Slide11Props {
   features?: Slide11Feature[];
 }
 
-/** Fixed feature-row top edges (shared left edge x=1151), one per icon. */
-const FEATURE_Y = [303.2, 541.2, 775];
+/** Feature rows flow in a single column from this top edge (shared left edge x=1151), so a
+ *  taller feature pushes the ones below it down instead of overlapping them. */
+const FEATURE_TOP = 303.2;
+/** Vertical pitch each non-last feature reserves, so default positions are unchanged. */
+const FEATURE_PITCH = [238, 233.8];
 
 // Parametrized reproduction of the official template's Slide 11 (feature-card grid).
 export default function Slide11({
@@ -29,7 +32,7 @@ export default function Slide11({
   overlayTitle = "Insert subtitle here",
   overlayBody = "Lorem ipsum dolor sit amet, consectetur\nadipiscing elit. Etiam nec suscipit dui. Sed\ncursus nibh id risus ultrices convallis.",
   features = [
-    { title: "Insert title here", text: "Aliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolort" },
+    { title: "Insert title here", text: "Aliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolortAliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolortAliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolortAliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolortAliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolort" },
     { title: "Insert title here", text: "Aliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolort" },
     { title: "Insert title here", text: "Aliquet sit orci aliquam morbi mauris mattis\nquisque dolor viverradolort" },
   ],
@@ -44,20 +47,21 @@ export default function Slide11({
       <Place x={1015} y={113.2}>
         <Text size={71} weight={700} color="#000000" leading={1.14} maxWidth={751}>{title}</Text>
       </Place>
-      <Place x={70.8} y={662.3}>
-        <Text size={64.5} weight={700} color="#FFFFFF" leading={1.14} maxWidth={683}>{overlayTitle}</Text>
-      </Place>
-      <Place x={70.8} y={774.1}>
+      {/* Overlay title + body flow in one Place; the title's minHeight reserves its original slot, so a taller title pushes the body down instead of covering it. */}
+      <Place x={70.8} y={662.3} w={683}>
+        <Text size={64.5} weight={700} color="#FFFFFF" leading={1.14} maxWidth={683} style={{ minHeight: 111.8 }}>{overlayTitle}</Text>
         <Text size={26.9} weight={500} color="#FFFFFF" leading={1.32} maxWidth={626}>{overlayBody}</Text>
       </Place>
-      {features.slice(0, 3).map((f, i) => (
-        <Place key={i} x={1151} y={FEATURE_Y[i]} w={660}>
-          <Stack gap={16}>
-            <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362}>{f.title}</Text>
-            <Text size={26.9} weight={500} color="#000000" leading={1.32} maxWidth={641}>{f.text}</Text>
-          </Stack>
-        </Place>
-      ))}
+      <Place x={1151} y={FEATURE_TOP} w={660}>
+        {features.slice(0, 3).map((f, i, arr) => (
+          <div key={i} style={{ minHeight: i < arr.length - 1 ? FEATURE_PITCH[i] : undefined }}>
+            <Stack gap={16}>
+              <Text size={33.9} weight={700} color="#000000" leading={1.32} maxWidth={362}>{f.title}</Text>
+              <Text size={26.9} weight={500} color="#000000" leading={1.32} maxWidth={641}>{f.text}</Text>
+            </Stack>
+          </div>
+        ))}
+      </Place>
     </Slide>
   );
 }

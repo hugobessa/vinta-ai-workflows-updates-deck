@@ -62,10 +62,9 @@ export default function Slide26({
                 valueColor="#ffffff"
               />
             </Place>
+            {/* Panel title + caption flow in one Place; the title's minHeight reserves its slot, so a taller title pushes the caption down instead of covering it. */}
             <Place x={pos.textX} y={697.7} w={500}>
-              <Text size={51.6} weight={700} color="#FFFFFF" align="center" leading={1.14}>{p.title}</Text>
-            </Place>
-            <Place x={pos.textX} y={792.7} w={500}>
+              <Text size={51.6} weight={700} color="#FFFFFF" align="center" leading={1.14} style={{ minHeight: 95 }}>{p.title}</Text>
               <Text size={24.7} weight={500} color="#FFFFFF" align="center" leading={1.32}>{p.caption}</Text>
             </Place>
           </Fragment>

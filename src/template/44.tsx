@@ -1,5 +1,4 @@
 import { Photo, Place, Slide, Text } from "@/lib";
-import { Fragment } from "react";
 
 export const meta = { title: "Slide 44" };
 
@@ -60,20 +59,13 @@ export default function Slide44({
       {people.slice(0, 4).map((p, i) => {
         const s = POS[i];
         return (
-          <Fragment key={i}>
-            <Place x={s.x} y={s.ry} w={417}>
-              <Text size={16.1} weight={400} color="#0052FF" align="center" leading={1.32}>{p.role}</Text>
-            </Place>
-            <Place x={s.x} y={759.2} w={417}>
-              <Text size={33.9} weight={700} color="#000000" align="center" leading={1.32}>{p.name}</Text>
-            </Place>
-            <Place x={s.x} y={818.5} w={417}>
-              <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32}>{p.line1}</Text>
-            </Place>
-            <Place x={s.x} y={892.1} w={417}>
-              <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32}>{p.line2}</Text>
-            </Place>
-          </Fragment>
+          // role → name → bio lines flow in one Place; each minHeight reserves its slot, so a taller line pushes what's below it down instead of covering it.
+          <Place key={i} x={s.x} y={s.ry} w={417}>
+            <Text size={16.1} weight={400} color="#0052FF" align="center" leading={1.32} style={{ minHeight: 759.2 - s.ry }}>{p.role}</Text>
+            <Text size={33.9} weight={700} color="#000000" align="center" leading={1.32} style={{ minHeight: 59.3 }}>{p.name}</Text>
+            <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32} style={{ minHeight: 73.6 }}>{p.line1}</Text>
+            <Text size={24.7} weight={500} color="#000000" align="center" leading={1.32}>{p.line2}</Text>
+          </Place>
         );
       })}
     </Slide>
